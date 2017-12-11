@@ -1,5 +1,9 @@
 package com.skygon.spark;
 
-public class DataStructure {
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.SparkSession;
 
+	
+public class DataStructure {
+	SparkSession s;
 }
