@@ -10,14 +10,21 @@ enum FileType {CSV, JSON};
 public class DataStructure {
 	public SparkSession mSparkSession = null;	
 	
-	DataStructure(){}
+	DataStructure(){
+		SparkConf sparkConf = new SparkConf()
+				.setAppName("JavaSparkPi")
+				.setMaster("local[*]");
+		this.mSparkSession = SparkSession.builder()
+				.config(sparkConf)
+				.getOrCreate();
+	}
 	
-	public Dataset<Row> readFromFile(SparkSession sp, String inFile, FileType ft){
+	public Dataset<Row> readFromFile(String inFile, FileType ft){
 		switch(ft){
 		case CSV:
-			return sp.read().csv(inFile);
+			return this.mSparkSession.read().csv(inFile);
 		case JSON:
-			return sp.read().json(inFile);
+			return this.mSparkSession.read().json(inFile);
 		default:
 			return null;
 		}
@@ -25,14 +32,9 @@ public class DataStructure {
 
 	public static void main( String[] args ){
 		DataStructure ds = new DataStructure();
-		SparkConf sparkConf = new SparkConf()
-				.setAppName("JavaSparkPi")
-				.setMaster("local[*]");
-		SparkSession sp = SparkSession.builder()
-				.config(sparkConf)
-				.getOrCreate();
 		
-		Dataset<Row> df = ds.readFromFile(sp, "src/resource/people.json", FileType.JSON);
+		Dataset<Row> df = ds.readFromFile("src/resource/people.json", FileType.JSON);
 		df.show();
+		System.out.println(df.toString());
 	}
 }
