@@ -1,5 +1,6 @@
 package com.skygon.spark;
 
+import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
@@ -7,30 +8,31 @@ import org.apache.spark.sql.SparkSession;
 enum FileType {CSV, JSON};
 
 public class DataStructure {
-	private SparkSession mSparkSession = null;	
+	public SparkSession mSparkSession = null;	
 	
-	DataStructure(){
-		this.mSparkSession = SparkSession.builder()
-				.appName("Spark SQL example")
-				.config("spark.some.config.option", "some-value")
-				.getOrCreate();
-		
-	}
+	DataStructure(){}
 	
-	public Dataset<Row> readFromFile(String inFile, FileType ft){
+	public Dataset<Row> readFromFile(SparkSession sp, String inFile, FileType ft){
 		switch(ft){
 		case CSV:
-			return mSparkSession.read().csv(inFile);
+			return sp.read().csv(inFile);
 		case JSON:
-			return mSparkSession.read().json(inFile);
+			return sp.read().json(inFile);
 		default:
 			return null;
 		}
 	}
 
 	public static void main( String[] args ){
-		/*DataStructure ds = new DataStructure();
-		Dataset<Row> df = ds.readFromFile("resource/people.json", FileType.JSON);
-		df.show();*/
+		DataStructure ds = new DataStructure();
+		SparkConf sparkConf = new SparkConf()
+				.setAppName("JavaSparkPi")
+				.setMaster("local[*]");
+		SparkSession sp = SparkSession.builder()
+				.config(sparkConf)
+				.getOrCreate();
+		
+		Dataset<Row> df = ds.readFromFile(sp, "src/resource/people.json", FileType.JSON);
+		df.show();
 	}
 }
