@@ -9,7 +9,6 @@ enum FileType {CSV, JSON};
 
 public class DataStructure {
 	public SparkSession mSparkSession = null;	
-	
 	DataStructure(){
 		SparkConf sparkConf = new SparkConf()
 				.setAppName("JavaSparkPi")
@@ -35,6 +34,7 @@ public class DataStructure {
 		
 		Dataset<Row> df = ds.readFromFile("src/resource/people.json", FileType.JSON);
 		df.show();
-		System.out.println(df.toString());
+		System.out.println(df.toJSON().toJavaRDD().count());
+		df.toJavaRDD();
 	}
 }
