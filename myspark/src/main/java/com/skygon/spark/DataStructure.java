@@ -3,6 +3,7 @@ package com.skygon.spark;
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.RowFactory;
 import org.apache.spark.sql.SparkSession;
 	
 enum FileType {CSV, JSON};
@@ -18,6 +19,7 @@ public class DataStructure {
 				.getOrCreate();
 	}
 	
+	
 	public Dataset<Row> readFromFile(String inFile, FileType ft){
 		switch(ft){
 		case CSV:
@@ -27,14 +29,19 @@ public class DataStructure {
 		default:
 			return null;
 		}
+		
+	}
+	
+	public void transform(){
+		//RowFactory.create(values)
 	}
 
 	public static void main( String[] args ){
 		DataStructure ds = new DataStructure();
 		
 		Dataset<Row> df = ds.readFromFile("src/resource/people.json", FileType.JSON);
-		df.show();
-		System.out.println(df.toJSON().toJavaRDD().count());
-		df.toJavaRDD();
+		//df.show();
+		df.explain();
+		
 	}
 }
