@@ -42,6 +42,7 @@ public class DataStructure {
 		Dataset<Row> df = ds.readFromFile("src/resource/people.json", FileType.JSON);
 		//df.show();
 		df.explain();
+		System.out.println(ds.mSparkSession.conf().getAll());
 		
 	}
 }
