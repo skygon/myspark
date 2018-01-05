@@ -18,7 +18,8 @@ public class DataStructure {
 	DataStructure(){
 		SparkConf sparkConf = new SparkConf()
 				.setAppName("JavaSparkPi")
-				.setMaster("local[*]");
+				.setMaster("spark://10.197.38.95:7077");
+				//.setMaster("local[*]");
 		this.mSparkSession = SparkSession.builder()
 				.config(sparkConf)
 				.getOrCreate();
@@ -48,7 +49,8 @@ public class DataStructure {
 		Dataset<Row> df2 = ds.readFromFile("src/resource/people.json", FileType.JSON);
 		df.show();
 		Dataset<Row> df3 = df.select("email");
-		df3.count();
+		System.out.println("start to count lines...");
+		System.out.println(df3.count());
 		//df.explain();
 		System.out.println(ds.mSparkSession.conf().getAll());
 
@@ -61,6 +63,7 @@ public class DataStructure {
 			i ++;
 			if (i >= col.length){
 				i = 0;
+				dfs.get(0).count();
 			}
 		}
 	}
