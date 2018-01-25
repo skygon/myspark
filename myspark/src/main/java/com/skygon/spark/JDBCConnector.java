@@ -26,7 +26,8 @@ public class JDBCConnector {
 		// schema is retrieved at driver program. That's why app still works without addjar.
 		// But actions on RDD launch at work node and has no context of mysql jdbc driver,
 		// that's why we need to add jar files to spark context.
-		this.mSparkSession.sparkContext().addJar("file:///E:/Java/project/myspark/myspark/lib/mysql-connector-java-5.1.44-bin.jar");
+		// This jar file will be added to 
+		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/mysql-connector-java-5.1.44-bin.jar");
 	}
 	
 	void setOptions(){
