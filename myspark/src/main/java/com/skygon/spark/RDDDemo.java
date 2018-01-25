@@ -22,9 +22,10 @@ public class RDDDemo {
 	public static void main(String[] args) throws InterruptedException{
 		RDDDemo demo = new RDDDemo();
 		
-		Dataset<Row> df = demo.mSparkSession.read().csv("src/resource/people.csv");
+		Dataset<Row> df = demo.mSparkSession.read().csv("file:///E:/CSV_1517000.csv");
 		df.show();
 		System.out.println("Total row count: " + df.count());
+		df.repartition(10);
 		
 		while(true){
 			TimeUnit.SECONDS.sleep(5);
