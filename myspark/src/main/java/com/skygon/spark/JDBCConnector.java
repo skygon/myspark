@@ -2,6 +2,7 @@ package com.skygon.spark;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
@@ -28,6 +29,7 @@ public class JDBCConnector {
 		// that's why we need to add jar files to spark context.
 		// This jar file will be added to 
 		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/mysql-connector-java-5.1.44-bin.jar");
+		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/commons-codec-1.3.jar");
 	}
 	
 	void setOptions(){
@@ -45,10 +47,13 @@ public class JDBCConnector {
 		df.show();
 		System.out.println("schema is " + schema.toString());
 	}
-	public static void main(String[] args){
+	public static void main(String[] args) throws InterruptedException{
 		System.out.println("=== start app ===");
 		JDBCConnector connector = new JDBCConnector();
 		connector.loadData();
 		System.out.println("== Finish load data ===");
+		while(true) {
+			TimeUnit.SECONDS.sleep(5);
+		}
 	}
 }
