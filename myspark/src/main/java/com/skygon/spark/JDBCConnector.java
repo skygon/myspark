@@ -1,7 +1,9 @@
 package com.skygon.spark;
 
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.spark.SparkConf;
@@ -38,13 +40,29 @@ public class JDBCConnector {
 		options.put("user", "test");
 		options.put("password", "1234");
 		options.put("dbtable", "city");
+		//options.put("partitionColumn", "ID");
+		//options.put("numPartitions", "4");
+		//options.put("lowerBound", "0");
+		//options.put("upperBound", "4000");
 	}
 	
 	void loadData(){
 		setOptions();
-		Dataset<Row> df = mSparkSession.read().format("jdbc").options(options).load();
+		//Dataset<Row> df = mSparkSession.read().format("jdbc").options(options).load();
+		
+		Properties opt = new Properties();
+		options.put("driver", "com.mysql.jdbc.Driver");
+		opt.setProperty("user", "test");
+		opt.setProperty("password", "1234");
+		String part_col = "Name";
+		int part_num = 4;
+		String predicate = String.format("MOD(cast(conv(substring(md5(%s), 1, 16), 16, 10) as unsigned integer), %d)", part_col, part_num);
+		
+		Dataset<Row> df = mSparkSession.read().jdbc("jdbc:mysql://10.27.16.129:3306/world", 
+				"city", new String[]{predicate + "=0", predicate + "=1", predicate + "=2" ,predicate + "=3"}, opt);
+		
 		StructType schema = df.schema();
-		df.show();
+		df.count();
 		System.out.println("schema is " + schema.toString());
 	}
 	public static void main(String[] args) throws InterruptedException{
