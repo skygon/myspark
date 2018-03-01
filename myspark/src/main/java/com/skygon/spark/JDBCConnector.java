@@ -10,6 +10,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.execution.datasources.jdbc.JDBCOptions;
 import org.apache.spark.sql.types.StructType;
 
 public class JDBCConnector {
@@ -31,7 +32,7 @@ public class JDBCConnector {
 		// that's why we need to add jar files to spark context.
 		// This jar file will be added to 
 		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/mysql-connector-java-5.1.44-bin.jar");
-		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/commons-codec-1.3.jar");
+		this.mSparkSession.sparkContext().addJar("file:///E:/play/myspark/myspark/lib/sparkcore-mstrjdbc.jar");
 	}
 	
 	void setOptions(){
@@ -40,17 +41,18 @@ public class JDBCConnector {
 		options.put("user", "test");
 		options.put("password", "1234");
 		options.put("dbtable", "city");
-		//options.put("partitionColumn", "ID");
-		//options.put("numPartitions", "4");
-		//options.put("lowerBound", "0");
-		//options.put("upperBound", "4000");
+		options.put("partitionColumn", "ID");
+		options.put("numPartitions", "4");
+		options.put("lowerBound", "0");
+		options.put("upperBound", "4000");
 	}
 	
 	void loadData(){
 		setOptions();
 		//Dataset<Row> df = mSparkSession.read().format("jdbc").options(options).load();
+		Dataset<Row> df = mSparkSession.read().format("com.microstrategy.appschema.mstr.mstrjdbc").options(options).load();
 		
-		Properties opt = new Properties();
+		/*Properties opt = new Properties();
 		options.put("driver", "com.mysql.jdbc.Driver");
 		opt.setProperty("user", "test");
 		opt.setProperty("password", "1234");
@@ -60,7 +62,7 @@ public class JDBCConnector {
 		
 		Dataset<Row> df = mSparkSession.read().jdbc("jdbc:mysql://10.27.16.129:3306/world", 
 				"city", new String[]{predicate + "=0", predicate + "=1", predicate + "=2" ,predicate + "=3"}, opt);
-		
+		*/
 		StructType schema = df.schema();
 		df.count();
 		System.out.println("schema is " + schema.toString());
